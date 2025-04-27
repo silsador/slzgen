@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A-GEN.XYZ - Outils Instagram</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://i.gifer.com/7VA.gif') center/cover no-repeat;
+      color: white;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .logo {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #ff00ff;
+      text-shadow: 0 0 10px #00ffff;
+      text-align: center;
+    }
+    .card {
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 20px 0;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+    .tool-button {
+      display: block;
+      background: #6f42c1;
+      color: white;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 10px;
+      text-decoration: none;
+      margin: 10px auto;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+      width: 80%;
+      max-width: 300px;
+      text-align: center;
+    }
+    .tool-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      text-align: center;
+    }
+    /* Styles pour la page de l'outil */
+    #tool-page {
+      display: none;
+    }
+    #back-button {
+      background: #6c757d;
+      margin: 20px auto;
+      display: block;
+    }
+    #controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin-top: 30px;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+    }
+    #controls input {
+      width: 90%;
+      max-width: 400px;
+      padding: 15px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      color: black;
+    }
+    #counter {
+      font-size: 24px;
+      text-align: center;
+      margin-top: 20px;
+      color: #00ff00;
+      text-shadow: 0 0 5px #00ff00;
+    }
+    /* Animation UUID */
+    .uuid-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(106, 42, 193, 0.9);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 10px;
+      font-size: 20px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      animation: fadeInOut 2s ease-in-out;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -40px); }
+      20% { opacity: 1; transform: translate(-50%, -50%); }
+      80% { opacity: 1; transform: translate(-50%, -50%); }
+      100% { opacity: 0; transform: translate(-50%, -60px); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Page d'accueil -->
+<div id="home-page">
+  <div class="container">
+    <div class="logo">A-GEN.XYZ</div>
+    
+    <div class="card">
+      <h2 style="text-align: center;">Outils Instagram Premium</h2>
+      <p style="text-align: center;">Découvrez nos outils puissants pour booster votre présence Instagram</p>
+      
+      <button id="autoLikeTool" class="tool-button">
+        🚀 Auto Like Instagram
+      </button>
+      
+      <p style="text-align: center;">Plus d'outils à venir bientôt...</p>
+    </div>
+    
+    <footer>
+      © 2023 A-GEN.XYZ | Tous droits réservés
+    </footer>
+  </div>
+</div>
+
+<!-- Page de l'outil -->
+<div id="tool-page">
+  <div class="container">
+    <button id="back-button" class="tool-button">← Retour à l'accueil</button>
+    
+    <h2 style="text-align: center;">Auto Like Instagram - Galaxy</h2>
+    <div id="counter">Likes envoyés: <span id="likeCount">0</span></div>
+    
+    <div id="controls">
+      <input type="text" id="linkInput" placeholder="Colle ici ton lien Instagram">
+      <button id="updateButton" class="tool-button">🔄 Mettre à jour le lien</button>
+      <button id="newUuidButton" class="tool-button">♻️ Générer un nouveau UUID</button>
+      <button id="startButton" class="tool-button" style="background: #28a745;">🚀 Démarrer Likes</button>
+      <button id="stopButton" class="tool-button" style="background: #dc3545;">🛑 Stopper Likes</button>
+    </div>
+    
+    <div id="uuidNotification" class="uuid-notification">UUID généré avec succès !</div>
+  </div>
+</div>
+
+<script>
+// Gestion de la navigation entre les pages
+document.getElementById('autoLikeTool').addEventListener('click', function() {
+  document.getElementById('home-page').style.display = 'none';
+  document.getElementById('tool-page').style.display = 'block';
+});
+
+document.getElementById('back-button').addEventListener('click', function() {
+  document.getElementById('tool-page').style.display = 'none';
+  document.getElementById('home-page').style.display = 'block';
+});
+
+// Code de l'outil Auto Like
+let intervalId = null;
+let currentLink = "https://www.instagram.com/p/DI67TaSCiQG/";
+let currentUuid = generateUuid();
+let likeCounter = 0;
+
+function generateUuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+function showUuidNotification() {
+  const notification = document.getElementById('uuidNotification');
+  notification.style.animation = 'none';
+  void notification.offsetWidth;
+  notification.style.animation = 'fadeInOut 2s ease-in-out';
+}
+
+function envoyerLike() {
+  fetch("https://zefame-free.com/?suborder=234", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      link: currentLink,
+      uuid: currentUuid
+    })
+  })
+  .then(async response => {
+    const data = await response.text();
+    console.log("Réponse API :", data);
+
+    if (!data.trim()) {
+      console.warn("⚠️ Réponse vide. Le serveur n'a pas répondu.");
+    } else if (data.toLowerCase().includes("success")) {
+      console.log("✅ Like envoyé avec succès !");
+      likeCounter++;
+      document.getElementById('likeCount').textContent = likeCounter;
+    } else {
+      console.log("ℹ️ Réponse inattendue :", data);
+    }
+  })
+  .catch(error => console.error("Erreur :", error));
+}
+
+document.getElementById('startButton').onclick = () => {
+  if (!intervalId) {
+    intervalId = setInterval(envoyerLike, 1000);
+    console.log("🚀 Envoi de likes démarré ! UUID:", currentUuid);
+  }
+};
+
+document.getElementById('stopButton').onclick = () => {
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+    console.log("🛑 Envoi de likes arrêté !");
+  }
+};
+
+document.getElementById('updateButton').onclick = () => {
+  const newLink = document.getElementById('linkInput').value;
+  if (newLink && newLink.startsWith("https://")) {
+    currentLink = newLink;
+    console.log("🔄 Nouveau lien mis à jour :", currentLink);
+    alert("Lien mis à jour avec succès !");
+  } else {
+    alert("❌ Merci d'entrer un lien Instagram valide !");
+  }
+};
+
+document.getElementById('newUuidButton').onclick = () => {
+  currentUuid = generateUuid();
+  console.log("♻️ Nouveau UUID généré :", currentUuid);
+  showUuidNotification();
+};
+</script>
+
+</body>
+</html>
